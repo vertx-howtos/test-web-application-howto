@@ -1,0 +1,139 @@
+= Test your Web application with Vert.x & JUnit 5
+:page-permalink: /
+:page-github: vertx-howtos/test-web-application-howto
+
+This document will show you how to test your web application with Vert.x & JUnit 5.
+
+== What you will build
+
+You will build a Web application using Vert.x Web and test it with JUnit 5 doing HTTP requests
+
+== What you need
+
+* A text editor or IDE
+* Java 8 higher
+* Maven
+
+== Create a project
+
+Here is the content of the `pom.xml` file you should be using:
+
+[source,xml,role="collapsed"]
+.Maven `pom.xml`
+----
+include::pom.xml[]
+----
+
+The pom contains JUnit 5 dependencies, https://vertx.io/docs/vertx-junit5/java/[vertx-junit5] and vertx-junit5-web-client[https://vertx.io/docs/vertx-junit5-web-client/java/] modules
+
+== Create the Web application Verticle
+
+The web application will have two endpoints:
+
+* `GET /pet/:id`
+* `POST /pet`
+
+`GET /pet/:id` serves a Pet with a specific id:
+[source,java,indent=0]
+----
+include::src/main/java/io/vertx/howtos/web/test/WebApplicationVerticle.java[tags=getPet]
+----
+
+`POST /pet` adds a new Pet to the collection:
+[source,java,indent=0]
+----
+include::src/main/java/io/vertx/howtos/web/test/WebApplicationVerticle.java[tags=addPet]
+----
+
+To start the HTTP server:
+[source,java,indent=0]
+----
+include::src/main/java/io/vertx/howtos/web/test/WebApplicationVerticle.java[tags=startHttpServer]
+----
+
+You can find the complete source code of the web application at https://github.com/vertx-howtos/test-web-application-howto/blob/master/src/main/java/io/vertx/howtos/web/test/WebApplicationVerticle.java[`WebApplicationVerticle`] on this how-to repo.
+
+== Create the Web application test
+
+Create a new test class called `WebApplicationTest` and add the following annotation to the class:
+[source,java,indent=0]
+----
+include::src/test/java/io/vertx/howtos/web/test/WebApplicationTest.java[tags=testExtensions]
+----
+
+This ensures that JUnit 5 runs the test inside Vert.x and injects the https://vertx.io/docs/vertx-web-client/java/[`WebClient`], which is used for doing HTTP requests to the web application.
+
+== Setup and Tear down the test
+
+To setup and tear down the test, deploy and undeploy the verticle like following:
+[source,java,indent=0]
+----
+include::src/test/java/io/vertx/howtos/web/test/WebApplicationTest.java[tags=setUp]
+----
+
+[source,java,indent=0]
+----
+include::src/test/java/io/vertx/howtos/web/test/WebApplicationTest.java[tags=tearDown]
+----
+
+== Configure the Web Client
+
+Since the test server will be available during the tests at `localhost:9000`, you can configure the injected `WebClient` using `@WebClientOptionsInject`:
+[source,java,indent=0]
+----
+include::src/test/java/io/vertx/howtos/web/test/WebApplicationTest.java[tags=webClientOptions]
+----
+
+== Test get pet endpoint
+
+To test the get pet endpoint:
+[source,java,indent=0]
+----
+include::src/test/java/io/vertx/howtos/web/test/WebApplicationTest.java[tags=testGetPetOk]
+----
+
+This assert that the HTTP response contains the correct status code, the correct `x-pet-id` header and correct body.
+After the response is received, if the assertions are correct the test completes, otherwise it fails.
+
+
+== Test get pet endpoint failures
+
+To test the _Bad Request_ and _Page not found_ responses:
+[source,java,indent=0]
+----
+include::src/test/java/io/vertx/howtos/web/test/WebApplicationTest.java[tags=testGetPetErrors]
+----
+
+== Post a pet and assert that is correctly added
+
+To test if adding a pet works, first add the pet and then get it with another request:
+[source,java,indent=0]
+----
+include::src/test/java/io/vertx/howtos/web/test/WebApplicationTest.java[tags=testPostAndGetPet]
+----
+
+When you pass a `Checkpoint` to `send*` methods of `TestRequest`, It doesn't complete the `VertxTestContext` but just flags the `Checkpoint`.
+For more details on `VertxTestContext` and `Checkpoint`s, look at https://vertx.io/docs/vertx-junit5/java/#_checkpoint_when_there_are_multiple_success_conditions[Vertx JUnit 5 documentation].
+`send*` methods return a `Future` that is completed after all assertions pass, so you can execute another request after the first one.
+
+== Complete code
+
+You can find the complete source code of the test class at https://github.com/vertx-howtos/test-web-application-howto/blob/master/src/test/java/io/vertx/howtos/web/test/WebApplicationTest.java[`WebApplicationTest`] on this how-to repo.
+
+== Summary
+
+This how-to explained to you:
+
+. How to inject `WebClient` into your unit tests
+. How to setup and tear down your HTTP web application in your unit tests
+. How to do test requests
+. How to assert HTTP responses
+. How to to multiple test requests in the same unit test
+
+
+== See also
+
+* https://vertx.io/docs/vertx-web/java/[Vert.x Web Documentation]
+* https://vertx.io/docs/vertx-junit5/java/[Vert.x JUnit 5]
+* https://vertx.io/docs/vertx-web-client/java/[Vert.x Web Client]
+* https://vertx.io/docs/vertx-junit5-web-client/java/[Vert.x JUnit 5 Web Client]
