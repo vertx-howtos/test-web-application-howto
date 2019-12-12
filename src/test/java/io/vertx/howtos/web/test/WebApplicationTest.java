@@ -24,7 +24,7 @@ import static io.vertx.junit5.web.TestRequest.*;
   VertxExtension.class, // VertxExtension MUST be configured before VertxWebClientExtension
   VertxWebClientExtension.class
 })
-// tag::endExtensions[]
+// end::testExtensions[]
 public class WebApplicationTest {
 
   // tag::webClientOptions[]
@@ -114,11 +114,8 @@ public class WebApplicationTest {
         emptyResponse()
       )
       .sendJson(newPet, testContext, checkpoint)
-      .setHandler(ar ->
-        testRequest(
-          client    // Create the test request using WebClient APIs
-            .get("/pet/5")
-        )
+      .setHandler(ar -> // Executed after the first response is completed
+        testRequest(client.get("/pet/5"))
           .expect(
             statusCode(200),
             responseHeader("x-pet-id", "5"),

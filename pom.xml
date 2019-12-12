@@ -67,7 +67,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.5.0</version>
         <configuration>
-          <mainClass>io.vertx.howtos.openapi.WebApplicationVerticle</mainClass>
+          <mainClass>io.vertx.howtos.web.test.WebApplicationVerticle</mainClass>
         </configuration>
       </plugin>
       <plugin>

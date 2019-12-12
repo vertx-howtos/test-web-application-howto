@@ -24,7 +24,7 @@ Here is the content of the `pom.xml` file you should be using:
 include::pom.xml[]
 ----
 
-The pom contains JUnit 5 dependencies, https://vertx.io/docs/vertx-junit5/java/[vertx-junit5] and vertx-junit5-web-client[https://vertx.io/docs/vertx-junit5-web-client/java/] modules
+The pom contains JUnit 5 dependencies, https://vertx.io/docs/vertx-junit5/java/[vertx-junit5] and https://vertx.io/docs/vertx-junit5-web-client/java/[vertx-junit5-web-client] modules
 
 == Create the Web application Verticle
 
@@ -65,7 +65,7 @@ This ensures that JUnit 5 runs the test inside Vert.x and injects the https://ve
 
 == Setup and Tear down the test
 
-To setup and tear down the test, deploy and undeploy the verticle like following:
+To setup and tear down the test, deploy and undeploy the `WebApplicationVerticle`:
 [source,java,indent=0]
 ----
 include::src/test/java/io/vertx/howtos/web/test/WebApplicationTest.java[tags=setUp]
@@ -84,7 +84,9 @@ Since the test server will be available during the tests at `localhost:9000`, yo
 include::src/test/java/io/vertx/howtos/web/test/WebApplicationTest.java[tags=webClientOptions]
 ----
 
-== Test get pet endpoint
+This ensures that all `WebClient` instances injected are properly configured to send requests to the application under test.
+
+== Test get pet
 
 To test the get pet endpoint:
 [source,java,indent=0]
@@ -92,11 +94,12 @@ To test the get pet endpoint:
 include::src/test/java/io/vertx/howtos/web/test/WebApplicationTest.java[tags=testGetPetOk]
 ----
 
-This assert that the HTTP response contains the correct status code, the correct `x-pet-id` header and correct body.
+The `testRequest` method creates a `TestRequest` instance, where you can add asserts about HTTP response.
+In this case, asserts about the status code, the `x-pet-id` header and body are added.
+
 After the response is received, if the assertions are correct the test completes, otherwise it fails.
 
-
-== Test get pet endpoint failures
+== Test get pet error codes
 
 To test the _Bad Request_ and _Page not found_ responses:
 [source,java,indent=0]
@@ -112,9 +115,10 @@ To test if adding a pet works, first add the pet and then get it with another re
 include::src/test/java/io/vertx/howtos/web/test/WebApplicationTest.java[tags=testPostAndGetPet]
 ----
 
-When you pass a `Checkpoint` to `send*` methods of `TestRequest`, It doesn't complete the `VertxTestContext` but just flags the `Checkpoint`.
-For more details on `VertxTestContext` and `Checkpoint`s, look at https://vertx.io/docs/vertx-junit5/java/#_checkpoint_when_there_are_multiple_success_conditions[Vertx JUnit 5 documentation].
-`send*` methods return a `Future` that is completed after all assertions pass, so you can execute another request after the first one.
+When you pass a `Checkpoint` to `send*` methods of `TestRequest`, They don't complete the `VertxTestContext` but just flag the `Checkpoint`.
+For more details on `VertxTestContext` and `Checkpoint`, look at https://vertx.io/docs/vertx-junit5/java/#_checkpoint_when_there_are_multiple_success_conditions[Vertx JUnit 5 documentation].
+
+`TestRequest.send*` methods return a `Future` that is completed after all assertions pass, so you can execute another request after the first one.
 
 == Complete code
 
