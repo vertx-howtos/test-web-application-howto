@@ -60,10 +60,7 @@ public class WebApplicationTest {
   // tag::testGetPetOk[]
   @Test
   public void testGetPetOk(WebClient client, VertxTestContext testContext) {
-    testRequest(
-      client    // Create the test request using WebClient APIs
-        .get("/pet/1")
-    )
+    testRequest(client.get("/pet/1"))
       .expect(
         statusCode(200),
         responseHeader("x-pet-id", "1"),
@@ -76,10 +73,7 @@ public class WebApplicationTest {
   // tag::testGetPetErrors[]
   @Test
   public void testGetPetBadRequest(WebClient client, VertxTestContext testContext) {
-    testRequest(
-      client
-        .get("/pet/bad")
-    )
+    testRequest(client.get("/pet/bad"))
       .expect(
         statusCode(400),
         emptyResponse()
@@ -89,10 +83,7 @@ public class WebApplicationTest {
 
   @Test
   public void testGetPetNotFound(WebClient client, VertxTestContext testContext) {
-    testRequest(
-      client
-        .get("/pet/10")
-    )
+    testRequest(client.get("/pet/10"))
       .expect(
         statusCode(404),
         emptyResponse()
