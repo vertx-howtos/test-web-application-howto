@@ -6,12 +6,12 @@ This document will show you how to test your web application with Vert.x & JUnit
 
 == What you will build
 
-You will build a Web application using Vert.x Web and test it with JUnit 5 doing HTTP requests
+You will build a Web application using Vert.x Web and test it with JUnit 5 doing HTTP requests.
 
 == What you need
 
 * A text editor or IDE
-* Java 8 higher
+* Java 8 or higher
 * Maven
 
 == Create a project
