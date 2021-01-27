@@ -24,7 +24,7 @@ Here is the content of the `pom.xml` file you should be using:
 include::pom.xml[]
 ----
 
-The pom contains JUnit 5 dependencies, https://vertx.io/docs/vertx-junit5/java/[vertx-junit5] and https://vertx.io/docs/vertx-junit5-web-client/java/[vertx-junit5-web-client] modules
+The pom contains JUnit 5 dependencies, https://vertx.io/docs/vertx-junit5/java/[vertx-junit5] and https://github.com/reactiverse/reactiverse-junit5-extensions[reactiverse-junit5-web-client] modules
 
 == Create the Web application Verticle
 
