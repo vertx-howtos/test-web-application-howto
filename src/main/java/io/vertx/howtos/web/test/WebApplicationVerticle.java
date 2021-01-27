@@ -68,7 +68,7 @@ public class WebApplicationVerticle extends AbstractVerticle {
       .requestHandler(router)
       .listen(9000)
       .<Void>mapEmpty()
-      .setHandler(startVerticlePromise);
+      .onComplete(startVerticlePromise);
     // end::startHttpServer[]
   }
 

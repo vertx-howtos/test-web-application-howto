@@ -8,8 +8,7 @@ import io.vertx.junit5.Checkpoint;
 import io.vertx.junit5.Timeout;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
-import io.vertx.junit5.web.VertxWebClientExtension;
-import io.vertx.junit5.web.WebClientOptionsInject;
+import io.reactiverse.junit5.web.WebClientOptionsInject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,12 +16,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.concurrent.TimeUnit;
 
-import static io.vertx.junit5.web.TestRequest.*;
+import static io.reactiverse.junit5.web.TestRequest.*;
 
 // tag::testExtensions[]
 @ExtendWith({
-  VertxExtension.class, // VertxExtension MUST be configured before VertxWebClientExtension
-  VertxWebClientExtension.class
+  VertxExtension.class,
 })
 // end::testExtensions[]
 public class WebApplicationTest {
@@ -41,7 +39,7 @@ public class WebApplicationTest {
   void setUp(Vertx vertx, VertxTestContext testContext) {
     testContext
       .assertComplete(vertx.deployVerticle(new WebApplicationVerticle()))
-      .setHandler(ar -> {
+      .onComplete(ar -> {
         deploymentId = ar.result();
         testContext.completeNow();
       });
@@ -53,7 +51,7 @@ public class WebApplicationTest {
   void tearDown(Vertx vertx, VertxTestContext testContext) {
     testContext
       .assertComplete(vertx.undeploy(deploymentId))
-      .setHandler(ar -> testContext.completeNow());
+      .onComplete(ar -> testContext.completeNow());
   }
   // end::tearDown[]
 
@@ -105,7 +103,7 @@ public class WebApplicationTest {
         emptyResponse()
       )
       .sendJson(newPet, testContext, checkpoint)
-      .setHandler(ar -> // Executed after the first response is completed
+      .onComplete(ar -> // Executed after the first response is completed
         testRequest(client.get("/pet/5"))
           .expect(
             statusCode(200),
