@@ -2,6 +2,9 @@
 :page-permalink: /
 :page-github: vertx-howtos/test-web-application-howto
 
+WARNING: This repository has been archived because the `reactiverse-junit5-web-client` is no longer relevant in Vert.x 5.
+Consider using `Future.expecting` with HTTP expectations.
+
 This document will show you how to test your web application with Vert.x & JUnit 5.
 
 == What you will build
